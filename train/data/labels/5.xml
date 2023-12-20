@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>5.png</filename>
+	<path>/Users/sina/Documents/cycurID/codes/ML_CV_test/images/5.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3024</width>
+		<height>4032</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>cal</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>676</xmin>
+			<ymin>165</ymin>
+			<xmax>2500</xmax>
+			<ymax>3721</ymax>
+		</bndbox>
+	</object>
+</annotation>
