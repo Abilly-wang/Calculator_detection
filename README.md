@@ -1,23 +1,39 @@
+# Object Detection with YOLO
 For this task, I used a pre-trained model in YOLO, that contains a calcultor class in training data.
 
+## Installation
 Install the requirements using the following:
+```bash
 pip install -r requirements.txt
+```
 
-For run train.py in train (enter train folder first):
+## Usage Instructions
+### For run train.py in train (enter train folder first):
 
 Process data with path ./data/images and ./data/labels:
+```bash
     python script.py --process process_data --data_directory ./data
-    Simple run (if ./data is the data directory)::
-        python script.py --process process_data
+```
+Simple run (if ./data is the data directory):
+```bash
+python script.py --process process_data
+```
 
 Train model:
+```bash
 python script.py --process train
-
+```
 Predict model with model path and path of images folder or image
-    python script.py --process predict --model_path <model_path> --images_path <images_path>
-    Simple run:
-        python script.py --process predict
+```bash
+python script.py --process predict --model_path <model_path> --images_path <images_path>
+```
+Simple run:
+```bash
+python script.py --process predict
+```
 
-For run backend(after enter folder):
+### Running the Backend Server(after enter folder):
+```bash
 python .\post_request.py
+```
 It will start to catch request

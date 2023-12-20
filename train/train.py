@@ -90,7 +90,7 @@ def train_model():
 # predict model with val images and save result
 def predict_model(model_path, images_path, color=(0, 255, 0), thickness=3):
     model = YOLO(model_path)
-    predictions = model.predict(source='./datasets/dataset_yolo/images/val')
+    predictions = model.predict(source=images_path)
 
     # for all image results in predictions
     for prediction in predictions:
@@ -107,7 +107,7 @@ def main():
     parser = argparse.ArgumentParser(description="Process some integers.")
     parser.add_argument('--process', choices=['train', 'process_data', 'predict'], required=True, help='Process to run')
     parser.add_argument('--data_directory', type=str, default='./data', help='Directory containing data to process')
-    parser.add_argument('--model_path', type=str, default='./model/yolov8n-oiv7.pt', help='Directory containing data to process')
+    parser.add_argument('--model_path', type=str, default='./model/best.pt', help='Directory containing data to process')
     parser.add_argument('--images_path', type=str, default='./datasets/dataset_yolo/images/val', help='Directory containing data to process')
 
     args = parser.parse_args()
