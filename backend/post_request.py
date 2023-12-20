@@ -32,15 +32,19 @@ def upload_file():
 
             prediction = model.predict(source=image)
             results.append(predict_result(prediction, file.filename))
+
         # test performance
         elif file and allowed_vedio_file(file.filename):
             video_path = os.path.join('videos', secure_filename(file.filename))
             file.save(video_path)
+
+            # start predict vedio
             start_time = time.time()
             prediction = model.predict(source=video_path, stream=True)
-            print(prediction)
             end_time = time.time()
             results.append(predict_result(prediction, file.filename))
+
+            # calculate the time required
             print(f"Start time: {start_time} seconds")
             print(f"End time: {end_time} seconds")
             print(f"Time taken to predict image: {end_time - start_time} seconds")

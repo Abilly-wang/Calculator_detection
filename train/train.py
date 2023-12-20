@@ -52,6 +52,7 @@ def get_calculator_dicts(directory):
         record["annotations"] = objs
         dataset_dicts.append(record)
 
+    # seprate data for training and validation
     length = int(len(dataset_dicts) * 0.9)
     train_data = dataset_dicts[:length]
     val_data = dataset_dicts[length:]
@@ -83,11 +84,11 @@ def get_calculator_dicts(directory):
 
 def train_model():
     model = YOLO('./model/yolov8n-oiv7.pt')
-    model.train(data='dataset.yaml', epochs=100, imgsz=640,device='0', batch=2, workers=0, freeze=20)
+    model.train(data='dataset.yaml', epochs=100, imgsz=640,device='0', batch=2, workers=0, freeze=19)
 
 
 # predict model with val images and save result
-def predict_model(model_path, color=(0, 255, 0), thickness=3):
+def predict_model(model_path, images_path, color=(0, 255, 0), thickness=3):
     model = YOLO(model_path)
     predictions = model.predict(source='./datasets/dataset_yolo/images/val')
 
@@ -100,26 +101,31 @@ def predict_model(model_path, color=(0, 255, 0), thickness=3):
         for bbox in bboxes:
             x1, y1, x2, y2 = map(int, bbox)
             cv2.rectangle(image, (x1, y1), (x2, y2), color, thickness)
-        cv2.imwrite(f"./result/detected_{os.path.basename(image_path)}", image)
+        cv2.imwrite(f"./result/detected_{os.path.basename(images_path)}", image)
 
 def main():
     parser = argparse.ArgumentParser(description="Process some integers.")
     parser.add_argument('--process', choices=['train', 'process_data', 'predict'], required=True, help='Process to run')
     parser.add_argument('--data_directory', type=str, default='./data', help='Directory containing data to process')
     parser.add_argument('--model_path', type=str, default='./model/yolov8n-oiv7.pt', help='Directory containing data to process')
+    parser.add_argument('--images_path', type=str, default='./datasets/dataset_yolo/images/val', help='Directory containing data to process')
 
     args = parser.parse_args()
 
+    # process data to YOLO formate
     if args.process == 'process_data':
         get_calculator_dicts(args.data_directory)
 
+    # train a model
     elif args.process == 'train':
         train_model()
 
+    # predict an image list
     elif args.process == 'predict':
-        predict_model(args.model_path)
+        predict_model(args.model_path, args.images_path)
     else:
         print("Invalid process specified")
 
 if __name__ == '__main__':
     main()
+    

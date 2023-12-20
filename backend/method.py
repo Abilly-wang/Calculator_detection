@@ -1,5 +1,6 @@
 import cv2
 
+# draw the bouding box and save image
 def draw_bbox(image_name, image, bboxes, color=(0, 255, 0), thickness=2):
     result_path = "../detection_result/"
     for bbox in bboxes:
@@ -19,6 +20,6 @@ def predict_result(predictions, image_name):
         results.append({
                 "filename": image_name,
                 "class_name": list(prediction.names.items()),
-                "predictions_bbox": bboxes_list  # assuming predictions is a numpy array
+                "predictions_bbox": bboxes_list
             })
     return results
