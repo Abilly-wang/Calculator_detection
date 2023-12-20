@@ -1,6 +1,9 @@
 # Object Detection with YOLO
 For this task, I used a pre-trained model in YOLO, that contains a calcultor class in training data.
 
+Python version: 3.10.9
+PyTorch version: 2.1.2
+
 ## Installation
 Install the requirements using the following:
 ```bash
@@ -12,7 +15,7 @@ pip install -r requirements.txt
 
 Process data with path ./data/images and ./data/labels:
 ```bash
-    python script.py --process process_data --data_directory ./data
+python script.py --process process_data --data_directory ./data
 ```
 Simple run (if ./data is the data directory):
 ```bash
