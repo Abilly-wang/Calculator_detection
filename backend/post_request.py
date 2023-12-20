@@ -32,6 +32,19 @@ def upload_file():
 
             prediction = model.predict(source=image)
             results.append(predict_result(prediction, file.filename))
+        # test performance
+        elif file and allowed_vedio_file(file.filename):
+            video_path = os.path.join('videos', secure_filename(file.filename))
+            file.save(video_path)
+            start_time = time.time()
+            prediction = model.predict(source=video_path, stream=True)
+            print(prediction)
+            end_time = time.time()
+            results.append(predict_result(prediction, file.filename))
+            print(f"Start time: {start_time} seconds")
+            print(f"End time: {end_time} seconds")
+            print(f"Time taken to predict image: {end_time - start_time} seconds")
+            os.remove(video_path)
         else:
             return jsonify({"message": "Allowed file types are jpg, jpeg, png"}), 400
 
@@ -41,5 +54,8 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png'}
 
+def allowed_vedio_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in {'mp4','xml'}
 if __name__ == "__main__":
     app.run(debug=True)
