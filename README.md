@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 Process data with path ./data/images and ./data/labels:
 ```bash
-    python script.py --process process_data --data_directory ./data
+python script.py --process process_data --data_directory ./data
 ```
 Simple run (if ./data is the data directory):
 ```bash
