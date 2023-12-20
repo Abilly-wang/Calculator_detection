@@ -2,7 +2,8 @@ from ultralytics import YOLO
 import xml.etree.ElementTree as ET
 import os
 import shutil
-
+import argparse
+import cv2
 
 def get_calculator_dicts(directory):
     dataset_dicts = []
@@ -18,6 +19,7 @@ def get_calculator_dicts(directory):
         
         # Construct the full path to the image file
         img_path = os.path.join(images_dir_path, root.find('filename').text)
+
         # Initialize the record dictionary
         record = {}
         
@@ -41,7 +43,6 @@ def get_calculator_dicts(directory):
             width = (xmax - xmin) / record["width"]
             height = (ymax - ymin) / record["height"]
 
-            # Format according to Detectron2's specifications
             obj = {
                 "bbox": [center_x, center_y, width, height],
                 "class": 0, # assuming calculator is the only category
@@ -54,7 +55,7 @@ def get_calculator_dicts(directory):
     length = int(len(dataset_dicts) * 0.9)
     train_data = dataset_dicts[:length]
     val_data = dataset_dicts[length:]
-    base_dir = os.path.join('./dataset', 'dataset_yolo')
+    base_dir = os.path.join('./datasets', 'dataset_yolo')
     image_dir = os.path.join(base_dir, 'images')
     label_dir = os.path.join(base_dir, 'labels')
     for d in train_data:
@@ -80,8 +81,45 @@ def get_calculator_dicts(directory):
             for obj in d['annotations']:
                 f.write(str(obj['class']) + ' ' + ' '.join([str(a) for a in obj['bbox']]) + '\n')
 
-# get_calculator_dicts('./data')  
-# model = YOLO('./yolov8n-oiv7.pt')
-# results = model.train(data='dataset.yaml', epochs=100, imgsz=640,device='0', batch=2, workers=0, freeze=20)
-# model = YOLO('./runs/detect/train7/weights/best.pt')
-# predictions = model.predict(source='./datasets/dataset_yolo/images/val')
+def train_model():
+    model = YOLO('./model/yolov8n-oiv7.pt')
+    model.train(data='dataset.yaml', epochs=100, imgsz=640,device='0', batch=2, workers=0, freeze=20)
+
+
+# predict model with val images and save result
+def predict_model(model_path, color=(0, 255, 0), thickness=3):
+    model = YOLO(model_path)
+    predictions = model.predict(source='./datasets/dataset_yolo/images/val')
+
+    # for all image results in predictions
+    for prediction in predictions:
+        image = prediction.orig_img
+        bboxes = prediction.boxes.xyxy
+        image_path = prediction.path
+        # draw all bboxes of one image
+        for bbox in bboxes:
+            x1, y1, x2, y2 = map(int, bbox)
+            cv2.rectangle(image, (x1, y1), (x2, y2), color, thickness)
+        cv2.imwrite(f"./result/detected_{os.path.basename(image_path)}", image)
+
+def main():
+    parser = argparse.ArgumentParser(description="Process some integers.")
+    parser.add_argument('--process', choices=['train', 'process_data', 'predict'], required=True, help='Process to run')
+    parser.add_argument('--data_directory', type=str, default='./data', help='Directory containing data to process')
+    parser.add_argument('--model_path', type=str, default='./model/yolov8n-oiv7.pt', help='Directory containing data to process')
+
+    args = parser.parse_args()
+
+    if args.process == 'process_data':
+        get_calculator_dicts(args.data_directory)
+
+    elif args.process == 'train':
+        train_model()
+
+    elif args.process == 'predict':
+        predict_model(args.model_path)
+    else:
+        print("Invalid process specified")
+
+if __name__ == '__main__':
+    main()
